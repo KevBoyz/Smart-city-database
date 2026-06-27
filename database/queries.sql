@@ -71,9 +71,11 @@ LEFT JOIN sensor ON infraestrutura.id = sensor.infraestrutura_id
 GROUP BY infraestrutura.id;
 SELECT AVG(quantidade)
 FROM (
-	SELECT COUNT(*) AS quantidade
-    FROM sensor
-    GROUP BY infraestrutura_id) quantidade_por_infraestrutura;
+    SELECT COUNT(sensor.id) AS quantidade
+    FROM infraestrutura
+    LEFT JOIN sensor ON infraestrutura.id = sensor.infraestrutura_id
+    GROUP BY infraestrutura.id
+) quantidade_por_infraestrutura;
 
 # Menor e maior salario, folha salarial, média salarial e cidadãos que possuem salário maior que a média
 SELECT MIN(salario) AS Menor_salario, MAX(salario) AS Maior_salario
