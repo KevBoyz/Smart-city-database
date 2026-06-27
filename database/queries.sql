@@ -37,7 +37,7 @@ SELECT tipo FROM infraestrutura
 WHERE id IN (
     SELECT infraestrutura_id
     FROM sensor
-    WHERE tipo = qualidade_do_ar
+    WHERE tipo = 'qualidade do ar'
 );
 
 # Cidadãos com propriedades
@@ -131,7 +131,8 @@ FROM infraestrutura
 JOIN area_urbana ON infraestrutura.area_urbana_id = area_urbana.id
 LEFT JOIN itens ON itens.infraestrutura_id = infraestrutura.id
 LEFT JOIN sensor ON sensor.infraestrutura_id = infraestrutura.id
-LEFT JOIN manutencao ON manutencao.infraestrutura_id = infraestrutura.id;
+LEFT JOIN manutencao ON manutencao.infraestrutura_id = infraestrutura.id
+GROUP BY infraestrutura.id;
 
 SELECT * FROM infraestrutura_resumo;
 
