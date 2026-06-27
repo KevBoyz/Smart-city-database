@@ -73,7 +73,9 @@ CREATE TABLE IF NOT EXISTS cidadao (
     nome VARCHAR(255) NOT NULL,
     data_nascimento DATE NOT NULL,
     estado_civil VARCHAR(20) NOT NULL,
-    cargo VARCHAR(45) NOT NULL
+    cargo VARCHAR(45) NOT NULL,
+    salario INT NOT NULL,
+    sexo VARCHAR (1)
 );
 
 CREATE TABLE IF NOT EXISTS propriedade (
