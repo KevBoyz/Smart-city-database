@@ -1,14 +1,15 @@
-
 # sensores por infraestrutura
 SELECT sensor.id, sensor.tipo, infraestrutura .tipo AS infraestrutura
 FROM sensor INNER JOIN infraestrutura
 ON sensor.infraestrutura_id = infraestrutura .id;
 
 # Cidadões que fizeram reclamações e o local problemático
-SELECT cidadao.nome AS Cidadao, motivo, area_urbana.nome AS Local
-FROM cidadao INNER JOIN reclamacao INNER JOIN area_urbana
-ON cpf = cidadao_cpf AND area_urbana.id = area_urbana_id;
-
+SELECT cidadao.nome AS Cidadao, motivo, area_urbana.nome AS local, servico_publico.nome
+FROM cidadao 
+INNER JOIN reclamacao ON cpf = cidadao_cpf
+INNER JOIN area_urbana ON area_urbana.id = area_urbana_id
+INNER JOIN servico_publico ON servico_publico.id = reclamacao.servico_publico_id;
+    
 # Manutenções feitas em infraestruturas, por conta do Right Join infraestruturas que não fizeram manutenção ainda aparecem
 SELECT infraestrutura.tipo, manutencao.responsavel, manutencao.inicio
 FROM manutencao RIGHT JOIN infraestrutura
@@ -19,6 +20,11 @@ SELECT  area_urbana.nome as Local, evento_urbano.nome AS Evento
 FROM area_urbana 
 LEFT JOIN area_urbana_has_evento_urbano ON area_urbana.id = area_urbana_has_evento_urbano.area_urbana_id
 LEFT JOIN evento_urbano ON area_urbana_has_evento_urbano.evento_urbano_id = evento_urbano.id;
+
+SELECT evento_urbano.nome AS Evento, infraestrutura.tipo AS Infraestrutura
+FROM infraestrutura_has_evento_urbano
+LEFT JOIN evento_urbano ON infraestrutura_has_evento_urbano.evento_urbano_id = evento_urbano.id
+LEFT JOIN infraestrutura ON infraestrutura_has_evento_urbano.infraestrutura_id = infraestrutura.id;
 
 # Local de propriedades de cidadãos
 SELECT cidadao.nome, area_urbana.nome AS area, propriedade.latitude, propriedade.longitude
@@ -93,21 +99,21 @@ WHERE salario > (
 # Infrestrutura com mais de 2 sensores
 SELECT infraestrutura.tipo, COUNT(sensor.id) AS sensores
 FROM infraestrutura
-JOIN sensor ON infraestrutura.id = sensor.infraestrutura_id
+INNER JOIN sensor ON infraestrutura.id = sensor.infraestrutura_id
 GROUP BY infraestrutura.id
 HAVING COUNT(sensor.id) > 2;
 
 # Cidadãos com mais de 1 propriedade
 SELECT cidadao.nome, COUNT(propriedade.id) AS propriedades
 FROM cidadao
-JOIN propriedade ON cidadao.cpf = propriedade.cidadao_cpf
+INNER JOIN propriedade ON cidadao.cpf = propriedade.cidadao_cpf
 GROUP BY cidadao.cpf
 HAVING COUNT(propriedade.id)>1;
 
 # Área urbana com mais de 2 reclamações
 SELECT area_urbana.nome, COUNT(reclamacao.id) AS total
 FROM reclamacao
-JOIN area_urbana ON reclamacao.area_urbana_id = area_urbana.id
+INNER JOIN area_urbana ON reclamacao.area_urbana_id = area_urbana.id
 GROUP BY area_urbana.id
 HAVING COUNT(reclamacao.id) > 2;
 
@@ -130,7 +136,7 @@ CREATE VIEW infraestrutura_resumo AS
 SELECT infraestrutura.id, infraestrutura.tipo, area_urbana.nome AS area, COUNT(DISTINCT itens.id) AS itens,
 COUNT(DISTINCT sensor.id) AS sensores, COUNT(DISTINCT manutencao.id) AS manutencoes
 FROM infraestrutura
-JOIN area_urbana ON infraestrutura.area_urbana_id = area_urbana.id
+INNER JOIN area_urbana ON infraestrutura.area_urbana_id = area_urbana.id
 LEFT JOIN itens ON itens.infraestrutura_id = infraestrutura.id
 LEFT JOIN sensor ON sensor.infraestrutura_id = infraestrutura.id
 LEFT JOIN manutencao ON manutencao.infraestrutura_id = infraestrutura.id
@@ -138,4 +144,5 @@ GROUP BY infraestrutura.id;
 
 SELECT * FROM infraestrutura_resumo;
 
-SELECT REGEXP_SUBSTR(valor, '[0-9]+$') AS '' from leitura where sensor_id in(select id from sensor where tipo = 'qualidade do ar');
+SELECT REGEXP_SUBSTR(valor, '[0-9]+$') AS qualidade_do_ar 
+from leitura where sensor_id in(select id from sensor where tipo = 'qualidade do ar');
