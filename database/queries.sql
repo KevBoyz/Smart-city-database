@@ -143,6 +143,8 @@ LEFT JOIN manutencao ON manutencao.infraestrutura_id = infraestrutura.id
 GROUP BY infraestrutura.id;
 
 SELECT * FROM infraestrutura_resumo;
-
-SELECT REGEXP_SUBSTR(valor, '[0-9]+$') AS qualidade_do_ar 
-from leitura where sensor_id in(select id from sensor where tipo = 'qualidade do ar');
+SELECT REGEXP_SUBSTR(valor, '[0-9]+$') AS qualidade_do_ar, infraestrutura.tipo
+FROM leitura 
+INNER JOIN sensor ON sensor.id = leitura.sensor_id
+INNER JOIN infraestrutura ON infraestrutura.id = sensor.infraestrutura_id
+WHERE sensor_id IN(SeLECT id FROM sensor WHERE tipo = 'qualidade do ar');
