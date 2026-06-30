@@ -4,7 +4,7 @@ FROM sensor INNER JOIN infraestrutura
 ON sensor.infraestrutura_id = infraestrutura .id;
 
 # Cidadões que fizeram reclamações e o local problemático
-SELECT cidadao.nome AS Cidadao, motivo, area_urbana.nome AS local, servico_publico.nome
+SELECT cidadao.nome AS Cidadao, motivo, area_urbana.nome AS local, servico_publico.nome as servico_publico
 FROM cidadao 
 INNER JOIN reclamacao ON cpf = cidadao_cpf
 INNER JOIN area_urbana ON area_urbana.id = area_urbana_id
